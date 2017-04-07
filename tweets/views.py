@@ -2,7 +2,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from django.forms.utils import ErrorList
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import DetailView, ListView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import (
+                            CreateView,
+                            DetailView,
+                            DeleteView,
+                            ListView,
+                            UpdateView
+                            )
 
 from .mixins import FormUserNeededMixin, UserOwnerMixin
 from .forms import TweetModelForm
@@ -15,7 +22,7 @@ class TweetCreateView(FormUserNeededMixin, CreateView):
     # queryset = Tweet.objects.all()
     form_class = TweetModelForm
     template_name = "tweets/create_view.html"
-    success_url = "/tweet/create/"
+    # success_url = "/tweet/create/"
     # fields = ["user", "content"]
     # login_url = "/admin/"
 
@@ -24,8 +31,10 @@ class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
     queryset = Tweet.objects.all()
     form_class = TweetModelForm
     template_name = "tweets/update_view.html"
-    success_url = "/tweet/"
+    # success_url = "/tweet/"
 
+# Las vistas Create&Update necesitan especificar ya sea un succes_url en las clases,
+# o bien, un get_absolute_url en el models.py
 
     # def form_valid(self, form):
     #    if self.request.user.is_autehnticated():
@@ -47,6 +56,11 @@ class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
 #        "form": form
 #    }
 #    return render(request, "tweets/create_view.html", context)
+
+class TweetDeleteView(LoginRequiredMixin, DeleteView):
+    model = Tweet
+    template_name = "tweets/delete_confirm.html"
+    success_url = reverse_lazy("tweet:list")
 
 
 class TweetDetailView(DetailView):
