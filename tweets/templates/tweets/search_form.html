@@ -1,4 +1,11 @@
-<form method="GET" action="{% url "tweet:list" %}">
-    <input type="text" name="q" placeholder="Buscar">
-    <input type="submit" value="Buscar">
-</form>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <form method="GET" action="{% url "tweet:list" %}" class="form-inline">
+            <div class="form-group">
+                <label for="q">Buscar</label>
+                <input class="form-control" type="text" name="q" placeholder="¿Qué deseas buscar?">
+                <input class="btn btn-default" type="submit" value="Buscar">
+            </div>
+        </form>
+    </div>
+</div>
