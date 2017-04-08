@@ -1,8 +1,13 @@
+{% include "tweets/search_form.html" %}
+<br/>
 {% for object in  object_list %}
     <p>{{ object.content }}<br/>
     {{ object.user }}<br/>
     Hace {{ object.timestamp|timesince }}</p><br/><br/>
 {% empty %}
-    <p>No se encontraron tweets.</p>
+    {% if request.GET.q %}
+        <p>No se han encontrado tweets.</p>
+        {% else %}
+            <p>No se han registrado tweets.</p>
+    {% endif %}
 {% endfor %}
-

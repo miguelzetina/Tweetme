@@ -82,7 +82,15 @@ class TweetListView(ListView):
     # template_name = "tweets/list_view.html"
     # En caso de no especificar el nombre del template, se debe crear el html
     # con el nombre de la clase sin el "View"
-    queryset = Tweet.objects.all()
+    # queryset = Tweet.objects.all()
+
+    def get_queryset(self, *args, **kwargs):
+        qs = Tweet.objects.all()
+        print(self.request.GET)
+        query = self.request.GET.get("q", None)
+        if query is not None:
+            qs = qs.filter(content__icontains=query)
+        return qs
 
     def get_context_data(self, *args, **kwargs):
         context = super(TweetListView, self).get_context_data(*args, **kwargs)
