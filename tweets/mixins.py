@@ -9,7 +9,7 @@ class FormUserNeededMixin(object):
             return super(FormUserNeededMixin, self).form_valid(form)
         else:
             form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList(
-                ["El usuario debe estar logeado para poder publicar un Tweet."])
+                ["El usuario debe estar logueado para poder publicar un Tweet."])
             return self.form_invalid(form)
 
 
