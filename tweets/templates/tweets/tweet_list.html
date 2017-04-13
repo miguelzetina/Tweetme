@@ -29,35 +29,63 @@
            }else {
                $.each(tweetList, function (key, value) {
                    var tweetKey = key;
+                   var dateDisplay = value.date_display;
                    var tweetUser = value.user;
                    var tweetContent = value.content;
 
                    $("#tweet-container").append(
-                       "<div class=\"media\"> <div class=\"media-body\">" + tweetContent + "<br/> via " + tweetUser.username + " | " + "<a href=\"#\">Ver<a>" + "</div> </div><hr/>"
+                       "<div class=\"media\"> <div class=\"media-body\">" + tweetContent + "<br/> via " + tweetUser.username + " | " + dateDisplay  + " | "+ "<a href=\"#\">Ver<a>" + "</div> </div><hr/>"
                    )
                })
            }
        }
 
-       $.ajax({
-           url: "/api/tweet/",
-           data:{
-               "q": query
-           },
-           method: "GET",
-           success: function (data) {
-               // console.log(data);
-               tweetList = data;
-               parseTweets();
+       function fetchTweets() {
+           $.ajax({
+               url: "/api/tweet/",
+               data:{
+                   "q": query
+               },
+               method: "GET",
+               success: function (data) {
+                   // console.log(data);
+                   tweetList = data;
+                   parseTweets();
 
-           },
-           error: function (data) {
-               console.log("Error")
-               console.log(data)
-           }
-       })
+               },
+               error: function (data) {
+                   console.log("Error");
+                   console.log(data)
+               }
+           })
+       }
 
+       fetchTweets()
 
+        $("#tweet-form").submit(function (event) {
+
+            event.preventDefault();
+
+            var this_ = $(this)
+
+            var formData = this_.serialize()
+
+             $.ajax({
+                   url: "/api/tweet/create/",
+                   data: formData,
+                   method: "POST",
+                   success: function (data) {
+                       console.log(data)
+                       fetchTweets()
+                   },
+                   error: function (data) {
+                       console.log("Error");
+                       console.log(data);
+                       console.log(data.status);
+                       console.log(data.statusText)
+                   }
+             })
+        })
     });
 
     </script>
@@ -77,7 +105,7 @@
 
             {% if not request.GET.get.q %}
                 <div class="">
-                    {% include "tweets/form.html" with form=create_form action_url=create_url btn_title="Tweet" %}
+                    {% include "tweets/form.html" with form=create_form action_url=create_url btn_title="Tweet" form_id="tweet-form" %}
                 </div>
                 <hr/>
             {% endif %}
