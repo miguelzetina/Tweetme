@@ -1,6 +1,51 @@
 {% extends "base.html" %}
 
+
+{% block script %}
+
+    <script>
+
+    $(document).ready(function () {
+       console.log("Working");
+
+
+
+       $.ajax({
+           url: "/api/tweet/",
+           method: "GET",
+           success: function (data) {
+               console.log(data);
+               $.each(data, function (key, value) {
+                   var tweetKey = key;
+                   var tweetUser = value.user;
+                   var tweetContent = value.content;
+
+
+
+                   $("#tweet-container").append(
+
+                       "<div class=\"media\"> <div class=\"media-body\">" + tweetContent + "<br/> via " + tweetUser.username + " | " + "<a href=\"#\">Ver<a>" + "</div> </div><hr/>"
+
+
+                   )
+               })
+           },
+           error: function (data) {
+               console.log("Error")
+               console.log(data)
+           }
+       })
+
+
+    });
+
+    </script>
+
+{% endblock script %}
+
+
 {% block content %}
+
     <div class="row">
 
         <div class="col-sm-3 col-xm-12" style="background-color: red;">
@@ -13,12 +58,16 @@
                 <div class="">
                     {% include "tweets/form.html" with form=create_form action_url=create_url btn_title="Tweet" %}
                 </div>
+                <hr/>
             {% endif %}
 
-            <hr/>
+            <div id="tweet-container">
+
+            </div>
 
             {% for object in  object_list %}
                 <div class="media">
+
                     <div class="media-left">
                         <a href="#">
                             {% if object.image %}
@@ -27,9 +76,10 @@
                         </a>
                     </div>
                     <div class="media-body">
-                        {{ object.content }}<br/>
-                        vía {{ object.user }} | Hace {{ object.timestamp|timesince }} | <a href="{{ object.get_absolute_url }} "> Ver </a>
+                        {{ object.content }} <br/>
+                        via {{ object.user }} | Hace {{ object.timestamp|timesince }} | <a href="{{ object.get_absolute_url }}">Ver</a>
                     </div>
+
                 </div>
                 <hr/>
             {% empty %}
