@@ -18,10 +18,10 @@
 
 
     $(document).ready(function () {
-       console.log("Working");
-
+       // console.log("Working");
        var query = getParameterByName("q");
        var tweetList= [];
+       var nextTweetUrl;
        
        function attachTweet(tweetValue, prepend) {
            var dateDisplay = tweetValue.date_display;
@@ -41,22 +41,37 @@
                $("#tweet-container").text("No se encontró nada que coincida con \"" + query+"\".")
            }else {
                $.each(tweetList, function (key, value) {
-                   var tweetKey = key;
+                   // var tweetKey = key;
                    attachTweet(value)
                })
            }
        }
 
-       function fetchTweets() {
+       function fetchTweets(url) {
+           // console.log("fetching...");
+           var fetchUrl;
+
+           if (!url) {
+               fetchUrl = "/api/tweet/"
+           }else{
+               fetchUrl = url
+           }
+
            $.ajax({
-               url: "/api/tweet/",
+               url: fetchUrl,
                data:{
                    "q": query
                },
                method: "GET",
                success: function (data) {
-                   // console.log(data);
-                   tweetList = data;
+                   console.log(data);
+                   tweetList = data.results
+                   if (data.next){
+                       nextTweetUrl = data.next;
+                   }else{
+                       $("#loadmore").css("display", "none")
+                   }
+
                    parseTweets();
 
                },
@@ -68,6 +83,13 @@
        }
 
        fetchTweets();
+
+       $("#loadmore").click(function (event) {
+           event.preventDefault();
+           if (nextTweetUrl) {
+               fetchTweets(nextTweetUrl)
+           }
+       });
 
        var charsStart = 140;
        var charsCurrent = 0;
@@ -148,6 +170,8 @@
             <div id="tweet-container">
 
             </div>
+
+            <a href="#" id="loadmore"> Cargar más Tweets.</a>
         </div>
     </div>
 {% endblock content %}
