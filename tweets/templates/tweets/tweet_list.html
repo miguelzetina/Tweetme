@@ -22,12 +22,14 @@
        var query = getParameterByName("q");
        var tweetList= [];
        var nextTweetUrl;
-       
+
        function attachTweet(tweetValue, prepend) {
            var dateDisplay = tweetValue.date_display;
            var tweetUser = tweetValue.user;
            var tweetContent = tweetValue.content;
-           var tweetFormattedHtml = "<div class=\"media\"> <div class=\"media-body\">" + tweetContent + "<br/> via " + tweetUser.username + " | " + dateDisplay  + " | "+ "<a href=\"#\">Ver<a>" + "</div> </div><hr/>"
+           var tweetFormattedHtml =
+
+               "<div class=\"media\"> <div class=\"media-body\">" + tweetContent + "<br/> via <a href='" + tweetUser.url + "'>" + tweetUser.username + "</a> | " + dateDisplay + " | "+ "<a href=\"#\">Ver<a>" + "</div> </div><hr/>";
 
            if (prepend == true){
                $("#tweet-container").prepend(tweetFormattedHtml)
@@ -149,7 +151,6 @@
     </script>
 
 {% endblock script %}
-
 
 {% block content %}
     <div class="row">
