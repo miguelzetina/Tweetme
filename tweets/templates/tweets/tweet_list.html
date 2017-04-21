@@ -23,6 +23,15 @@
        var tweetList= [];
        var nextTweetUrl;
 
+       function updateHashLinks() {
+           $(".media-body").each(function (data) {
+               var hashtagRegex = /(^|\s)#([\w\d-]+)/g
+               var newText = $(this).html().replace(hashtagRegex, "$1<a href=\"/tags/$2/\">#$2</a>")
+               $(this).html(newText)
+           })
+
+       }
+
        function attachTweet(tweetValue, prepend) {
            var dateDisplay = tweetValue.date_display;
            var tweetUser = tweetValue.user;
@@ -75,6 +84,7 @@
                    }
 
                    parseTweets();
+                   updateHashLinks();
 
                },
                error: function (data) {
